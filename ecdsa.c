@@ -72,15 +72,8 @@ int main() {
                 printf("%02X", public_key64[i]);
         }
 	
-	char unsigned public_key32[33];
-	size_t pk32_len = sizeof(public_key32);
-
-        secp256k1_ec_pubkey_serialize(ctx, public_key32, &pk32_len, &pubkey, SECP256K1_EC_COMPRESSED);
-
-        printf("\n\nShort Public Key : ");
-        for(int i=0; i<33; i++) {
-                printf("%02X", public_key32[i]);
-        }
+	printf("\nPublic Address:1");
+	puts(coin_encode(public_key64, 0));
 
 	/*
 	&pubkeys[i]

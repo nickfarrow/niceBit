@@ -48,19 +48,32 @@ char* base58(byte *s, char *out) {
 	return out;
 }
  
+/*
 char *coin_encode(const char *x, const char *y, char *out) {
+*/
+char *coin_encode(const unsigned char *pubkey64, char *out) {
 	byte s[65];
 	byte rmd[5 + RIPEMD160_DIGEST_LENGTH];
- 
+ 	
+	/*
 	if (!is_hex(x) || !(is_hex(y))) {
 		coin_err = "bad public point string";
 		return 0;
 	}
- 
+ 	*/
+
 	s[0] = 4;
+
+	int j;	
+	for (j = 0; j < 64; j++) {
+		s[j+1] = pubkey64[j];
+	}
+
+	/*
 	str_to_byte(x, s + 1, 32);
 	str_to_byte(y, s + 33, 32);
- 
+ 	*/
+
 	rmd[0] = COIN_VER;
 	RIPEMD160(SHA256(s, 65, 0), SHA256_DIGEST_LENGTH, rmd + 1);
  
