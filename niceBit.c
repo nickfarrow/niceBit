@@ -94,6 +94,7 @@ int check_vanity(unsigned char *pubaddress) {
 
 			/* Check if string in pubaddress */
 			if(strstr(pubaddress, compstr) != NULL) {
+				printf("Found : %s\n", compstr);
 				return 1;
 			}
 		}
@@ -110,13 +111,12 @@ int main() {
 		gen_keypair(seckey, pubaddress);
 	
 		if(check_vanity(pubaddress)) {
-			printf("FOUND!!!\n\n");
 			printf("Seckey : ");
 			for(int i=0; i<32; i++) {
 				printf("%02X", seckey[i]);
 			}
 			printf("\n");
-			printf("Public Address: 1%s\n", pubaddress);
+			printf("Public Address: 1%s\n\n", pubaddress);
 		}
 		else {
 			; /*printf("nothing...\n\n");*/

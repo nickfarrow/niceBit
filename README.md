@@ -1,4 +1,4 @@
-# Bitcoin Vanity Address Generator
+# Bitcoin Vanity Address Generator (WORK IN PROGRESS)
 
 ## Dependencies
 * libsep256k1
