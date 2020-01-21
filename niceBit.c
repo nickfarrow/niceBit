@@ -58,7 +58,9 @@ void gen_keypair(unsigned char *seckey, unsigned char *pubaddress) {
 	printf("\n\n");
 	*/
 
-	/* Generate Public Address */
+	/* Generate Public Address
+	 * (from create_pubkey.h)
+	 */
 	coin_encode(public_key64, pubaddress);	
 }
 
@@ -69,7 +71,7 @@ int check_vanity(unsigned char *pubaddress) {
 	/* For each vanity length
 	 * ('len' digits in a row)
 	 */
-	for(int len=10; len>4; len--) {
+	for(int len=10; len>3; len--) {
 		
 		/* For each digit 1-9 */
 		for(int i=0; i<10; i++) {
