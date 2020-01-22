@@ -71,6 +71,11 @@ int gen_keypair(unsigned char *seckey, unsigned char *pubaddress) {
 	 * (from create_pubkey.h)
 	 */
 	coin_encode(public_key64, pubaddress);	
+
+	/* Destroy context to free memory */
+	/* TODO make take context out of this function
+	 * and use the same context for all generation?
+	 */
 	secp256k1_context_destroy(ctx);	
 
 	return 1;
