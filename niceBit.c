@@ -83,7 +83,7 @@ int check_vanity(unsigned char *pubaddress) {
 	/* For each vanity length
 	 * ('len' digits in a row)
 	 */
-	for(int len=10; len>3; len--) {
+	for(int len=10; len>4; len--) {
 		
 		/* For each digit 1-9 */
 		for(int i=0; i<10; i++) {
@@ -102,8 +102,6 @@ int check_vanity(unsigned char *pubaddress) {
 			/* End string with null char*/
 			compstr[j] = '\0';
 			
-			/*printf("Here is that string... %s\n", compstr);*/
-
 			/* Check if string in pubaddress */
 			if(strstr(pubaddress, compstr) != NULL) {
 				printf("Found : %s\n", compstr);
