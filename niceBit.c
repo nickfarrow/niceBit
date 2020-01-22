@@ -4,7 +4,7 @@
 
 static secp256k1_context *ctx = NULL;
 
-void gen_keypair(unsigned char *seckey, unsigned char *pubaddress) {
+int gen_keypair(unsigned char *seckey, unsigned char *pubaddress) {
 	secp256k1_pubkey pubkey;
 	/*unsigned char seckey[32];*/
 	unsigned char public_key64[65];
@@ -16,28 +16,37 @@ void gen_keypair(unsigned char *seckey, unsigned char *pubaddress) {
 	ctx = secp256k1_context_create(
 			SECP256K1_CONTEXT_SIGN | SECP256K1_CONTEXT_VERIFY);
 
-	/* Load secret key */
+	/* Load private key (seckey) from random bytes */
 	FILE *frand = fopen("/dev/urandom", "r");
 	fread(seckey, 32, 1, frand);
 	fclose(frand);
-	
-	/* 
+	if (frand == NULL) {
+		printf("Failed to read /dev/urandom\n");
+		return 0;
+	}
+
+	/* Print private key,
 	printf("Seckey : ");
 	for(int i=0; i<32; i++) {
 		printf("%02X", seckey[i]);
 	}
 	printf("\n\n");
 	*/
-
+	
+	/* Apparently there is a 2^-128 chance of
+	 * a secret key being invalid.
+	 * https://en.bitcoin.it/wiki/Private_key
+	 */
 	/* Verify secret key is valid */
 	if (!secp256k1_ec_seckey_verify(ctx, seckey)) {
-		printf("Invalid secret key");
+		printf("Invalid secret key\n");
 	}
 
 	
 	/* Create Public Key */
 	if (!secp256k1_ec_pubkey_create(ctx, &pubkey, seckey)) {
-		printf("Failed to create public key");
+		printf("Failed to create public key\n");
+		return 0;
 	}
 	
 	/* Serialize Public Key */
@@ -62,6 +71,9 @@ void gen_keypair(unsigned char *seckey, unsigned char *pubaddress) {
 	 * (from create_pubkey.h)
 	 */
 	coin_encode(public_key64, pubaddress);	
+	secp256k1_context_destroy(ctx);	
+
+	return 1;
 }
 
 int check_vanity(unsigned char *pubaddress) {
@@ -106,10 +118,13 @@ int check_vanity(unsigned char *pubaddress) {
 int main() {
 	unsigned char seckey[32];
 	unsigned char pubaddress[40];
-	
+
 	while(1) {
-		gen_keypair(seckey, pubaddress);
-	
+		if(!gen_keypair(seckey, pubaddress)) {
+			printf("Failed to create keypair\n");
+			return 1;
+		}
+
 		if(check_vanity(pubaddress)) {
 			printf("Seckey : ");
 			for(int i=0; i<32; i++) {
