@@ -5,7 +5,7 @@
 
 static secp256k1_context *ctx = NULL;
 
-int gen_keypair(unsigned char *seckey, unsigned char *pubaddress) {
+int gen_keypair(unsigned char *seckey, unsigned char *pubaddress, secp256k1_context *ctx) {
 	secp256k1_pubkey pubkey;
 	/*unsigned char seckey[32];*/
 	unsigned char public_key64[65];
@@ -13,9 +13,6 @@ int gen_keypair(unsigned char *seckey, unsigned char *pubaddress) {
 	size_t pk_len = 65;
 
 	int i = 0;
-
-	ctx = secp256k1_context_create(
-			SECP256K1_CONTEXT_SIGN | SECP256K1_CONTEXT_VERIFY);
 
 	/* Load private key (seckey) from random bytes */
 	FILE *frand = fopen("/dev/urandom", "r");
@@ -73,12 +70,6 @@ int gen_keypair(unsigned char *seckey, unsigned char *pubaddress) {
 	 */
 	coin_encode(public_key64, pubaddress);	
 
-	/* Destroy context to free memory */
-	/* TODO make take context out of this function
-	 * and use the same context for all generation?
-	 */
-	secp256k1_context_destroy(ctx);	
-
 	return 1;
 }
 
@@ -123,15 +114,16 @@ int main() {
 	unsigned char seckey[32];
 	unsigned char pubaddress[40];
 	
+	ctx = secp256k1_context_create(
+			SECP256K1_CONTEXT_SIGN | SECP256K1_CONTEXT_VERIFY);
 
 	int i = 1;
-	
 	
 	clock_t starttime = clock();
 	double timespent;
 	double rate;
 	while(1) {
-		if(!gen_keypair(seckey, pubaddress)) {
+		if(!gen_keypair(seckey, pubaddress, ctx)) {
 			printf("Failed to create keypair\n");
 			return 1;
 		}
@@ -148,7 +140,7 @@ int main() {
 			; /*printf("nothing...\n\n");*/
 		}
 
-		if(i%10000 == 0) {
+		if(i % 10000 == 0) {
 			clock_t currenttime = clock();
 			timespent = 
 				(double)((currenttime - starttime) 
@@ -159,6 +151,12 @@ int main() {
 
 		i++;
 	}
+
+	/* Destroy context to free memory */
+	/* TODO make take context out of this function
+	 * and use the same context for all generation?
+	 */
+	secp256k1_context_destroy(ctx);	
 }
 
 
