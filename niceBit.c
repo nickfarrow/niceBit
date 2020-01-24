@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <time.h>
 #include <secp256k1.h>
 #include "create_pubkey.h"
 
@@ -88,7 +89,7 @@ int check_vanity(unsigned char *pubaddress) {
 	/* For each vanity length
 	 * ('len' digits in a row)
 	 */
-	for(int len=10; len>4; len--) {
+	for(int len=10; len>5; len--) {
 		
 		/* For each digit 1-9 */
 		for(int i=0; i<10; i++) {
@@ -121,7 +122,14 @@ int check_vanity(unsigned char *pubaddress) {
 int main() {
 	unsigned char seckey[32];
 	unsigned char pubaddress[40];
+	
 
+	int i = 1;
+	
+	
+	clock_t starttime = clock();
+	double timespent;
+	double rate;
 	while(1) {
 		if(!gen_keypair(seckey, pubaddress)) {
 			printf("Failed to create keypair\n");
@@ -139,6 +147,17 @@ int main() {
 		else {
 			; /*printf("nothing...\n\n");*/
 		}
+
+		if(i%10000 == 0) {
+			clock_t currenttime = clock();
+			timespent = 
+				(double)((currenttime - starttime) 
+				/ CLOCKS_PER_SEC);
+			rate = (double)(i / timespent);
+			printf("Generated %d addresses in %.1fs. Rate:%.1f/s \n", i, timespent, rate);
+		}
+
+		i++;
 	}
 }
 
