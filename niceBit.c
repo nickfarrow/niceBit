@@ -7,7 +7,6 @@ static secp256k1_context *ctx = NULL;
 
 int gen_keypair(unsigned char *seckey, unsigned char *pubaddress, secp256k1_context *ctx) {
 	secp256k1_pubkey pubkey;
-	/*unsigned char seckey[32];*/
 	unsigned char public_key64[65];
 	
 	size_t pk_len = 65;
@@ -80,7 +79,7 @@ int check_vanity(unsigned char *pubaddress) {
 	/* For each vanity length
 	 * ('len' digits in a row)
 	 */
-	for(int len=10; len>5; len--) {
+	for(int len=10; len>4; len--) {
 		
 		/* For each digit 1-9 */
 		for(int i=0; i<10; i++) {
@@ -122,6 +121,7 @@ int main() {
 	clock_t starttime = clock();
 	double timespent;
 	double rate;
+
 	while(1) {
 		if(!gen_keypair(seckey, pubaddress, ctx)) {
 			printf("Failed to create keypair\n");
@@ -140,7 +140,7 @@ int main() {
 			; /*printf("nothing...\n\n");*/
 		}
 
-		if(i % 10000 == 0) {
+		if(i % 100000 == 0) {
 			clock_t currenttime = clock();
 			timespent = 
 				(double)((currenttime - starttime) 
@@ -153,9 +153,6 @@ int main() {
 	}
 
 	/* Destroy context to free memory */
-	/* TODO make take context out of this function
-	 * and use the same context for all generation?
-	 */
 	secp256k1_context_destroy(ctx);	
 }
 
