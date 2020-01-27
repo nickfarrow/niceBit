@@ -8,7 +8,7 @@ static secp256k1_context *ctx = NULL;
 int gen_keypair(unsigned char *seckey, unsigned char *pubaddress, secp256k1_context *ctx) {
 	secp256k1_pubkey pubkey;
 	unsigned char public_key64[65];
-	
+
 	size_t pk_len = 65;
 
 	int i = 0;
@@ -39,13 +39,13 @@ int gen_keypair(unsigned char *seckey, unsigned char *pubaddress, secp256k1_cont
 		printf("Invalid secret key\n");
 	}
 
-	
+
 	/* Create Public Key */
 	if (!secp256k1_ec_pubkey_create(ctx, &pubkey, seckey)) {
 		printf("Failed to create public key\n");
 		return 0;
 	}
-	
+
 	/* Serialize Public Key */
 	secp256k1_ec_pubkey_serialize(
 			ctx,
@@ -69,7 +69,11 @@ int gen_keypair(unsigned char *seckey, unsigned char *pubaddress, secp256k1_cont
 	 */
 	coin_encode(public_key64, pubaddress);	
 
+	/* sketchy, delete last char of pubaddress
+	puts(pubaddress); */
+
 	return 1;
+
 }
 
 int check_vanity(unsigned char *pubaddress) {
@@ -111,8 +115,9 @@ int check_vanity(unsigned char *pubaddress) {
 
 int main() {
 	unsigned char seckey[32];
-	unsigned char pubaddress[40];
-	
+	unsigned char pubaddress[1];
+	unsigned char *p = pubaddress;
+
 	ctx = secp256k1_context_create(
 			SECP256K1_CONTEXT_SIGN | SECP256K1_CONTEXT_VERIFY);
 
@@ -134,7 +139,9 @@ int main() {
 				printf("%02X", seckey[i]);
 			}
 			printf("\n");
+			p[strlen(p)-1] = 0;
 			printf("Public Address: 1%s\n\n", pubaddress);
+			printf("public address : 1%s\n\n", p);
 		}
 		else {
 			; /*printf("nothing...\n\n");*/
