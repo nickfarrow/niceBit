@@ -1,8 +1,8 @@
-# Bitcoin Vanity Address Generator (WORK IN PROGRESS)
+# Bitcoin Vanity Address Generator
 ## TODO
 * Create make file
+* Convert to Wallet Import Format locally
 * Add search from dictionary words
-* Are there really that many repeated numbers at the END of an address? Seems like these are being found way too often...?
 
 ## Dependencies
 * libsep256k1
@@ -15,3 +15,8 @@ gcc niceBit.c -o niceBit -lcrypto -lsecp256k1
 ```
 ./niceBit
 ```
+
+## Loading Private Keys
+Private keys are currently printed in hex. To load in a wallet such as Electron you must first convert to the more conventional [Wallet Import Format](https://en.bitcoin.it/wiki/Wallet_import_format).
+
+To do this I have been using [this website](https://gobittest.appspot.com/PrivateKey), which possibly could steal your private keys...
