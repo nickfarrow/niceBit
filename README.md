@@ -1,4 +1,7 @@
 # Bitcoin Vanity Address Generator
+Create Bitcoin vanity addresses with C.
+Also doubles as an open source method to generate Bitcoin wallets.
+
 ## TODO
 * Create make file
 * Convert to Wallet Import Format locally
