@@ -5,7 +5,8 @@
 
 static secp256k1_context *ctx = NULL;
 
-int gen_keypair(unsigned char *seckey, unsigned char *pubaddress, secp256k1_context *ctx) {
+/* Create private & public address pair */
+int gen_keypair(unsigned char *seckey, char *pubaddress, secp256k1_context *ctx) {
 	secp256k1_pubkey pubkey;
 	unsigned char public_key64[65];
 
@@ -69,14 +70,13 @@ int gen_keypair(unsigned char *seckey, unsigned char *pubaddress, secp256k1_cont
 	 */
 	coin_encode(public_key64, pubaddress);	
 
-	/* sketchy, delete last char of pubaddress
-	puts(pubaddress); */
-
+	/* sketchy, force end address after 33 chars*/
+	pubaddress[33] = '\0';
+	
 	return 1;
-
 }
 
-int check_vanity(unsigned char *pubaddress) {
+int check_vanity(char *pubaddress) {
 	unsigned char compstr[40];
 	int j;
 
@@ -115,14 +115,14 @@ int check_vanity(unsigned char *pubaddress) {
 
 int main() {
 	unsigned char seckey[32];
-	unsigned char pubaddress[1];
-	unsigned char *p = pubaddress;
+	char pubaddress[40];
+	char *p = pubaddress;
 
 	ctx = secp256k1_context_create(
 			SECP256K1_CONTEXT_SIGN | SECP256K1_CONTEXT_VERIFY);
 
 	int i = 1;
-	
+
 	clock_t starttime = clock();
 	double timespent;
 	double rate;
@@ -139,12 +139,8 @@ int main() {
 				printf("%02X", seckey[i]);
 			}
 			printf("\n");
-			p[strlen(p)-1] = 0;
+
 			printf("Public Address: 1%s\n\n", pubaddress);
-			printf("public address : 1%s\n\n", p);
-		}
-		else {
-			; /*printf("nothing...\n\n");*/
 		}
 
 		if(i % 100000 == 0) {
@@ -162,5 +158,3 @@ int main() {
 	/* Destroy context to free memory */
 	secp256k1_context_destroy(ctx);	
 }
-
-
