@@ -1,4 +1,5 @@
-/* https://rosettacode.org/wiki/Bitcoin/public_point_to_address
+/* Original:
+ * https://rosettacode.org/wiki/Bitcoin/public_point_to_address
 */
 
 #include <stdio.h>
@@ -55,21 +56,27 @@ char *coin_encode(const unsigned char *pubkey64, char *out) {
 	byte s[65];
 	byte rmd[5 + RIPEMD160_DIGEST_LENGTH];
  	
-	/*
+	
+        /*	
 	if (!is_hex(x) || !(is_hex(y))) {
 		coin_err = "bad public point string";
 		return 0;
 	}
  	*/
 
+	/* First byte is equal to 4,
+	 * already handled by secp256k1
+	 
 	s[0] = 4;
+	*/
 
 	int j;	
-	for (j = 0; j < 64; j++) {
-		s[j+1] = pubkey64[j];
+	for (j = 0; j < 65; j++) {
+		s[j] = pubkey64[j];
 	}
 
-	/*
+	/* We are working with pubkey64=x+y
+	 * so we can skip this step
 	str_to_byte(x, s + 1, 32);
 	str_to_byte(y, s + 33, 32);
  	*/
