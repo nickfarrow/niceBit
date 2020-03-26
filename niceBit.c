@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <time.h>
 #include <secp256k1.h>
-#include "create_pubkey.h"
+#include "createPubKey.h"
+#include "walletImportFormat.h"
 
 static secp256k1_context *ctx = NULL;
 
@@ -138,7 +139,8 @@ int main() {
 			for(int i=0; i<32; i++) {
 				printf("%02X", seckey[i]);
 			}
-			printf("\n");
+			printf("\nWIF: ");
+			create_wif(seckey);
 
 			printf("Public Address: 1%s\n\n", pubaddress);
 		}
