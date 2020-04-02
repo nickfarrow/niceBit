@@ -86,7 +86,7 @@ int check_vanity(char *pubaddress, int searchlen) {
 	/* For each vanity length
 	 * ('len' digits in a row)
 	 */
-	for(int len=10; len>searchlen; len--) {
+	for(int len=10; len>=searchlen; len--) {
 		
 		/* For each digit 1-9 */
 		for(int i=0; i<10; i++) {
@@ -120,7 +120,7 @@ int main(int argc, char **argv) {
 	unsigned char seckey[32];
 	char pubaddress[40];
 	char *p = pubaddress;
-	char *n = "3";
+	char *n = "4";
 	int searchlen;
 	int c;
 
