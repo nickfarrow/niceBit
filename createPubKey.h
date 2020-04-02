@@ -1,4 +1,4 @@
-/* Original:
+/* Original, only slightly edited:
  * https://rosettacode.org/wiki/Bitcoin/public_point_to_address
 */
 

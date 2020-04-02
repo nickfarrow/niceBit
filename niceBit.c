@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
 #include <time.h>
 #include <secp256k1.h>
 #include "createPubKey.h"
@@ -77,14 +79,14 @@ int gen_keypair(unsigned char *seckey, char *pubaddress, secp256k1_context *ctx)
 	return 1;
 }
 
-int check_vanity(char *pubaddress) {
+int check_vanity(char *pubaddress, int searchlen) {
 	unsigned char compstr[40];
 	int j;
 
 	/* For each vanity length
 	 * ('len' digits in a row)
 	 */
-	for(int len=10; len>4; len--) {
+	for(int len=10; len>searchlen; len--) {
 		
 		/* For each digit 1-9 */
 		for(int i=0; i<10; i++) {
@@ -114,10 +116,26 @@ int check_vanity(char *pubaddress) {
 	return 0;
 }
 
-int main() {
+int main(int argc, char **argv) {
 	unsigned char seckey[32];
 	char pubaddress[40];
 	char *p = pubaddress;
+	char *n = "3";
+	int searchlen;
+	int c;
+
+	/* Get input arguments (length) */
+	while ((c = getopt(argc, argv, "n:")) != -1) {
+		switch (c) {
+			case 'n':
+				n = optarg;
+				break;
+			case '?':
+				printf("Invalid argument: %c\n", optopt);
+				return 1;
+		}
+	}
+	searchlen = atoi(n);
 
 	ctx = secp256k1_context_create(
 			SECP256K1_CONTEXT_SIGN | SECP256K1_CONTEXT_VERIFY);
@@ -134,7 +152,7 @@ int main() {
 			return 1;
 		}
 
-		if(check_vanity(pubaddress)) {
+		if(check_vanity(pubaddress, searchlen)) {
 			printf("Seckey : ");
 			for(int i=0; i<32; i++) {
 				printf("%02X", seckey[i]);

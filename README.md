@@ -14,6 +14,11 @@ gcc niceBit.c -o niceBit -lcrypto -lsecp256k1
 ./niceBit
 ```
 
+Specify minimum number of consecutive digits:
+```
+./niceBit -n 5
+```
+
 ## Loading Private Keys
 Private keys are printed in base58 [Wallet Import Format](https://en.bitcoin.it/wiki/Wallet_import_format), which can be easily loaded into common desktop wallet software.
 
@@ -24,3 +29,4 @@ Proof that this all works can be found via these [ingoing and outgoing transacti
 * Create make file
 * Add search from dictionary words
 * Include secp256k1 in lib
+* Search for letters! Not just numbers...
