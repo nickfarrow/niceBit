@@ -81,6 +81,7 @@ int gen_keypair(unsigned char *seckey, char *pubaddress, secp256k1_context *ctx)
 
 int check_vanity(char *pubaddress, int searchlen) {
 	unsigned char compstr[40];
+	char possibleChars[] = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
 	int j;
 
 	/* For each vanity length
@@ -89,16 +90,14 @@ int check_vanity(char *pubaddress, int searchlen) {
 	for(int len=10; len>=searchlen; len--) {
 		
 		/* For each digit 1-9 */
-		for(int i=0; i<10; i++) {
+		for(int i=0; i<58; i++) {
 			
 			/* Comprise compstr of 'len' repeats
 			 * of digit 'i'
 			 */
 			j = 0;
 			while(j<len) {
-				/* Offset digit i by 48
-				 * as 48 is 0 in ASCII*/
-				compstr[j] = i + 48;
+				compstr[j] = possibleChars[i];
 				j++;
 			}
 			
@@ -120,7 +119,7 @@ int main(int argc, char **argv) {
 	unsigned char seckey[32];
 	char pubaddress[40];
 	char *p = pubaddress;
-	char *n = "4";
+	char *n = "5";
 	int searchlen;
 	int c;
 

@@ -29,4 +29,3 @@ Proof that this all works can be found via these [ingoing and outgoing transacti
 * Create make file
 * Add search from dictionary words
 * Include secp256k1 in lib
-* Search for letters! Not just numbers...
