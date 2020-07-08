@@ -33,7 +33,7 @@ int gen_keypair(unsigned char *seckey, char *pubaddress, secp256k1_context *ctx)
 	}
 	printf("\n\n");
 	*/
-	
+
 	/* Apparently there is a 2^-128 chance of
 	 * a secret key being invalid.
 	 * https://en.bitcoin.it/wiki/Private_key
@@ -71,11 +71,8 @@ int gen_keypair(unsigned char *seckey, char *pubaddress, secp256k1_context *ctx)
 	/* Generate Public Address
 	 * (from create_pubkey.h)
 	 */
-	coin_encode(public_key64, pubaddress);	
+	pubkey_to_P2PKH(public_key64, pubaddress);
 
-	/* sketchy, force end address after 33 chars*/
-	pubaddress[33] = '\0';
-	
 	return 1;
 }
 
@@ -88,10 +85,10 @@ int check_vanity(char *pubaddress, int searchlen) {
 	 * ('len' digits in a row)
 	 */
 	for(int len=10; len>=searchlen; len--) {
-		
+
 		/* For each digit 1-9 */
 		for(int i=0; i<58; i++) {
-			
+
 			/* Comprise compstr of 'len' repeats
 			 * of digit 'i'
 			 */
@@ -100,10 +97,10 @@ int check_vanity(char *pubaddress, int searchlen) {
 				compstr[j] = possibleChars[i];
 				j++;
 			}
-			
+
 			/* End string with null char*/
 			compstr[j] = '\0';
-			
+
 			/* Check if string in pubaddress */
 			if(strstr(pubaddress, compstr) != NULL) {
 				printf("Found : %s\n", compstr);
@@ -117,7 +114,7 @@ int check_vanity(char *pubaddress, int searchlen) {
 
 int main(int argc, char **argv) {
 	unsigned char seckey[32];
-	char pubaddress[40];
+	char pubaddress[34];
 	char *p = pubaddress;
 	char *n = "5";
 	int searchlen;
@@ -159,13 +156,13 @@ int main(int argc, char **argv) {
 			printf("\nWIF: ");
 			create_wif(seckey);
 
-			printf("Public Address: 1%s\n\n", pubaddress);
+			printf("Public Address: %s\n\n", pubaddress);
 		}
 
 		if(i % 100000 == 0) {
 			clock_t currenttime = clock();
-			timespent = 
-				(double)((currenttime - starttime) 
+			timespent =
+				(double)((currenttime - starttime)
 				/ CLOCKS_PER_SEC);
 			rate = (double)(i / timespent);
 			printf("Generated %d addresses in %.1fs. Rate:%.1f/s \n", i, timespent, rate);
@@ -175,5 +172,5 @@ int main(int argc, char **argv) {
 	}
 
 	/* Destroy context to free memory */
-	secp256k1_context_destroy(ctx);	
+	secp256k1_context_destroy(ctx);
 }

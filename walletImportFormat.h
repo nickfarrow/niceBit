@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <openssl/sha.h>
 #include <openssl/ripemd.h>
-#include "lib/base58.c"
 
 /* https://en.bitcoin.it/wiki/Wallet_import_format */
 
@@ -12,11 +11,9 @@ char *create_wif(const unsigned char *privatekey) {
 	unsigned char checksum[11];
 	unsigned char combinedKey[75];
 
-	size_t combinedKeySize = 37;	
-	size_t wifSize = 52;
-	char wif[52];
-	
-	wifSize = 80;
+	size_t combinedKeySize = 37;
+	size_t wifSize = 51;
+	char wif[51];
 
 	/* Add 0x80 byte in front */
 	newKey[0] = 128;
@@ -28,7 +25,7 @@ char *create_wif(const unsigned char *privatekey) {
 	SHA256(newKey, 33, SHAkey);
 
 	/* Perform SHA-256 hash again on the result */
-	SHA256(SHAkey, 32, SHAkey2); 
+	SHA256(SHAkey, 32, SHAkey2);
 
 	/* Checksum is first 4 bytes of 2nd SHA*/
 	for(int i=0; i<4; i++) {
@@ -43,8 +40,8 @@ char *create_wif(const unsigned char *privatekey) {
 		combinedKey[33+i] = checksum[i];
 	}
 
-	/* Encode with base-58 */	
-	b58enc(wif, &wifSize, combinedKey, combinedKeySize);
+	/* Encode with base-58 */
+	base58(combinedKey, combinedKeySize, wif, wifSize);
 	puts(wif);
 
 	return 0;
