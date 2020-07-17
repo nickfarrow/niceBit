@@ -29,6 +29,5 @@ Proof that this all works can be found via these [ingoing and outgoing transacti
 
 
 ## TODO
-* Create make file
 * Add search from dictionary words
 * Include secp256k1 in lib
