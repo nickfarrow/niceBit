@@ -2,6 +2,9 @@
 Create Bitcoin vanity addresses with C.
 An open source method to generate nice Bitcoin addresses, also serving as an example of how to use the [bitcoin-core/secp256k1](https://github.com/bitcoin-core/secp256k1) C library.
 
+# Tutorial
+For a tutorial on how this code works, see http://nicholasfarrow.com/Cryptography-in-Bitcoin-with-C/.
+
 ## Dependencies
 * [libsep256k1](https://github.com/bitcoin-core/secp256k1) (easy install)
 * openssl (you likely have this)
