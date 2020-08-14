@@ -138,7 +138,7 @@ int main(int argc, char **argv) {
 	char pubaddress[34];
 	
 	char *p = pubaddress;
-	char *n = "0";
+	char *n = "5";
 	char *filename = "";
 	
 	int searchlen;
