@@ -19,6 +19,12 @@ Specify minimum number of consecutive digits:
 ./niceBit -n 5
 ```
 
+Search for words from a file:
+```
+./niceBit -f FILE
+```
+The file should contain one word per line.
+
 ## Loading Private Keys
 Private keys are printed in base58 [Wallet Import Format](https://en.bitcoin.it/wiki/Wallet_import_format), which can be easily loaded into common desktop wallet software.
 
@@ -26,6 +32,4 @@ Proof that this all works can be found via these [ingoing and outgoing transacti
 
 
 ## TODO
-* Create make file
-* Add search from dictionary words
 * Include secp256k1 in lib
