@@ -166,8 +166,8 @@ int main(int argc, char **argv) {
 
 	int i = 1;
 
-	clock_t starttime = clock();
-	double timespent;
+	time_t start_time, current_time;
+	double time_spent;
 	double rate;
 	
 	char words[100][34];
@@ -185,7 +185,9 @@ int main(int argc, char **argv) {
 		}
 		printf("%d words have been loaded.\n", n_words);
 	}
-	
+
+
+	time(&start_time);
 	while (1) {
 		if (!gen_keypair(seckey, pubaddress, ctx)) {
 			printf("Failed to create keypair\n");
@@ -204,12 +206,11 @@ int main(int argc, char **argv) {
 		}
 
 		if (i % 100000 == 0) {
-			clock_t currenttime = clock();
-			timespent =
-				(double)((currenttime - starttime)
-				/ CLOCKS_PER_SEC);
-			rate = (double)(i / timespent);
-			printf("Generated %d addresses in %.1fs. Rate:%.1f/s \n", i, timespent, rate);
+			time(&current_time);
+			time_spent = difftime(current_time, start_time);
+
+			rate = (double)(i / time_spent);
+			printf("Generated %d addresses in %.1fs. Rate:%.1f/s \n", i, time_spent, rate);
 		}
 
 		i++;
