@@ -138,7 +138,7 @@ int main(int argc, char **argv) {
 	char pubaddress[34];
 	
 	char *p = pubaddress;
-	char *n = "5";
+	char *n = "0";
 	char *filename = "";
 	
 	int searchlen;
@@ -159,6 +159,10 @@ int main(int argc, char **argv) {
 		}
 	}
 	
+	if ((n == "0") && (filename == "")) {
+		puts("Resorting to default search length of 6.");
+		n = "6";
+	}
 	searchlen = atoi(n);
 
 	ctx = secp256k1_context_create(
@@ -186,6 +190,7 @@ int main(int argc, char **argv) {
 		printf("%d words have been loaded.\n", n_words);
 	}
 	
+	puts("Beginning search...\n");
 	while (1) {
 		if (!gen_keypair(seckey, pubaddress, ctx)) {
 			printf("Failed to create keypair\n");
