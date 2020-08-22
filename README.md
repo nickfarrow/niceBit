@@ -1,4 +1,8 @@
-# Bitcoin Vanity Address Generator
+<div align="center">
+  <img src="https://i.imgur.com/8KgjpAK.png">
+</div>
+
+# A Simple Bitcoin Vanity Address Generator
 Create Bitcoin vanity addresses with C.
 An open source method to generate nice Bitcoin addresses, also serving as an example of how to use the [bitcoin-core/secp256k1](https://github.com/bitcoin-core/secp256k1) C library.
 
