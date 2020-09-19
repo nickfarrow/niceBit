@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <time.h>
+#include <ctype.h>
 #include <secp256k1.h>
 #include "createPubKey.h"
 #include "walletImportFormat.h"
@@ -133,6 +134,65 @@ int check_vanity(char *pubaddress, int searchlen, char (*words)[34], int nwords)
 	return 0;
 }
 
+void all_subsitude(char (*words)[34], char word[34], int *n_words, int len, int start, int a){
+    if (start == len){
+       strcpy(words[*n_words], word);
+       //Print new word
+       puts(word);
+       words[*n_words][len-1] = '\0';
+       *n_words ++;
+       return;
+    }
+    char ch = word[start];
+    char sub = '\0';
+    switch (ch){
+            case 'e':
+               if (a == 1){
+               sub = '3';
+               }
+               break;
+            case '1':
+               if (a == 1){
+               sub = 'i';
+               }
+               break;
+            case 'O':
+                   // No base58 sub
+                break;
+            case 'L':
+                   // No base58 sub
+                break;
+            case 'i':
+                   // No base58 sub
+                break;
+            default: 
+              if(ch >= 'a' && ch <= 'z'){
+                 sub = toupper(ch);
+              }
+              else if(ch >= 'A' && ch <= 'Z'){
+                 sub = tolower(ch);
+              }
+              break;
+    }
+    //Skip on special chars
+    if (sub == '\0'){
+        all_subsitude(words, word, n_words, len, start+1 ,a);
+    }else{
+        char word2[34];
+        strcpy(word2, word);
+        word2[start]=sub;
+        all_subsitude(words, word, n_words, len, start+1 ,a);
+        all_subsitude(words, word2, n_words, len, start+1 ,a);
+    }
+}
+
+void alphanum_combinations(char (*word)[34], char generatedWord[1000][34], int n_words, int a) {
+    //Generated alphanumeric substitutions
+    for (int i=0; i<n_words; i++) {
+            all_subsitude(generatedWord, word[i], &n_words, strlen(word[i]), 0, a);
+    }
+}
+
 int main(int argc, char **argv) {
 	unsigned char seckey[32];
 	char pubaddress[34];
@@ -140,12 +200,14 @@ int main(int argc, char **argv) {
 	char *p = pubaddress;
 	char *n = "0";
 	char *filename = "";
-	
+    int C = 0;
+    int a = 0;
+    	
 	int searchlen;
-	int c;
-
+    int c;
+    
 	/* Get input arguments (length) */
-	while ((c = getopt(argc, argv, "n:f:")) != -1) {
+	while ((c = getopt(argc, argv, "aCn:f:")) != -1) {
 		switch (c) {
 			case 'n':
 				n = optarg;
@@ -153,6 +215,12 @@ int main(int argc, char **argv) {
 			case 'f':
 				filename = optarg;
 				break;
+            case 'a':
+                a = 1;
+                break;
+            case 'C':
+                C = 1;
+                break;
 			case '?':
 				printf("Invalid argument: %c\n", optopt);
 				return 1;
@@ -175,6 +243,8 @@ int main(int argc, char **argv) {
 	double rate;
 	
 	char words[100][34];
+    //Generated alphanumeric substitutions
+    char generatedWord[1000][34];
 	int n_words = 0;
 	/* Load Dictionary File */
 	if (filename != "") {
@@ -187,6 +257,9 @@ int main(int argc, char **argv) {
 			puts(words[n_words]);
 			n_words++;
 		}
+        if (C){
+           alphanum_combinations(words, generatedWord, n_words, a);
+        }
 		printf("%d words have been loaded.\n", n_words);
 	}
 	
