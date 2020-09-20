@@ -134,13 +134,11 @@ int check_vanity(char *pubaddress, int searchlen, char (*words)[34], int nwords)
 	return 0;
 }
 
-void all_subsitude(char (*words)[34], char word[34], int *n_words, int len, int start, int a){
+void all_substitutes(char (*words)[34], char word[34], int *n_words, int len, int start, int a){
     if (start == len){
        strcpy(words[*n_words], word);
-       //Print new word
-       puts(word);
-       words[*n_words][len-1] = '\0';
-       *n_words ++;
+       words[*n_words-1][len] = '\0';
+       (*n_words)++;
        return;
     }
     char ch = word[start];
@@ -176,20 +174,22 @@ void all_subsitude(char (*words)[34], char word[34], int *n_words, int len, int 
     }
     //Skip on special chars
     if (sub == '\0'){
-        all_subsitude(words, word, n_words, len, start+1 ,a);
+        all_substitutes(words, word, n_words, len, start+1, a);
     }else{
         char word2[34];
         strcpy(word2, word);
         word2[start]=sub;
-        all_subsitude(words, word, n_words, len, start+1 ,a);
-        all_subsitude(words, word2, n_words, len, start+1 ,a);
+        all_substitutes(words, word, n_words, len, start+1, a);
+        all_substitutes(words, word2, n_words, len, start+1, a);
     }
 }
 
-void alphanum_combinations(char (*word)[34], char generatedWord[1000][34], int n_words, int a) {
+void alphanum_combinations(char (*word)[34], char search_list[1000][34], int *n_words, int a) {
+    int initial_n_words = *n_words;
+    *n_words = 0;
     //Generated alphanumeric substitutions
-    for (int i=0; i<n_words; i++) {
-            all_subsitude(generatedWord, word[i], &n_words, strlen(word[i]), 0, a);
+    for (int i=0; i<initial_n_words; i++) {
+            all_substitutes(search_list, word[i], n_words, strlen(word[i]), 0, a);
     }
 }
 
@@ -243,8 +243,9 @@ int main(int argc, char **argv) {
 	double rate;
 	
 	char words[100][34];
+    
     //Generated alphanumeric substitutions
-    char generatedWord[1000][34];
+    char search_list[1000][34];
 	int n_words = 0;
 	/* Load Dictionary File */
 	if (filename != "") {
@@ -252,15 +253,26 @@ int main(int argc, char **argv) {
 		FILE *fptr = fopen(filename, "r");
 		
 		while (fgets(words[n_words], 34, fptr)) {
-			/* words[n_words][strlen(words[n_words]) - 1] = '\0'; */
 			words[n_words][strlen(words[n_words]) - 1] = '\0';
 			puts(words[n_words]);
 			n_words++;
 		}
         if (C){
-           alphanum_combinations(words, generatedWord, n_words, a);
+            alphanum_combinations(words, search_list, &n_words, a);
+	    
+	    for (i=0; i<n_words; i++) {
+		    printf("word %d is %s \n", i, search_list[i]);
+	    }
+
+	    //search_list[n_words][0] = '\0';
         }
-		printf("%d words have been loaded.\n", n_words);
+	else {
+	    for (i=0; i<n_words; i++) {
+		    strcpy(search_list[i], words[i]);
+	    }
+
+	}
+	printf("%d words have been loaded.\n", n_words);
 	}
 	
 	puts("Beginning search...\n");
@@ -271,7 +283,7 @@ int main(int argc, char **argv) {
 			return 1;
 		}
 
-		if (check_vanity(pubaddress, searchlen, words, n_words)) {
+		if (check_vanity(pubaddress, searchlen, search_list, n_words)) {
 			printf("Seckey : ");
 			for (int j=0; j<32; j++) {
 				printf("%02X", seckey[j]);
