@@ -30,6 +30,12 @@ Search for words from a file:
 ```
 ./niceBit -f FILE
 ```
+
+Search for alphanumeric substitutions of words from a file:
+```
+./niceBit -aC -f FILE
+```
+
 The file should contain one word per line.
 
 ## Loading Private Keys
