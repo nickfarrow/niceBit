@@ -10,7 +10,7 @@ typedef unsigned char byte;
 int is_hex(const char *s) {
 	int i;
 	for (i = 0; i < 64; i++)
-		if (!isxdigit(s[i])) return 0;
+	if (!isxdigit(s[i])) return 0;
 	return 1;
 }
 
