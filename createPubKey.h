@@ -45,4 +45,5 @@ char *pubkey_to_P2PKH(const unsigned char *pubkey64, char *out) {
 	/* Remove k-n leading 1's from the address */
 	memmove(out, out + (k-n), 34-(k-n));
 	out[34-(k-n)] = '\0';
+	return out;
 }
