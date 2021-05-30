@@ -18,7 +18,7 @@ void str_to_byte(const char *src, byte *dst, int n) {
 	while (n--) sscanf(src + n * 2, "%2hhx", dst + n);
 }
 
-char *pubkey_to_P2PKH(const unsigned char *pubkey64, char *out) {
+void pubkey_to_P2PKH(const unsigned char *pubkey64, char *out) {
 	byte s[65];
 	byte rmd[5 + RIPEMD160_DIGEST_LENGTH];
 
@@ -45,5 +45,4 @@ char *pubkey_to_P2PKH(const unsigned char *pubkey64, char *out) {
 	/* Remove k-n leading 1's from the address */
 	memmove(out, out + (k-n), 34-(k-n));
 	out[34-(k-n)] = '\0';
-	return out;
 }
