@@ -7,6 +7,8 @@
 #include "createPubKey.h"
 #include "walletImportFormat.h"
 
+#include <unistd.h>
+
 static secp256k1_context *ctx = NULL;
 
 /* Create private & public address pair */
@@ -154,7 +156,7 @@ void all_substitutes(char (*words)[34], char word[34], int *n_words, int len, in
                 sub = 'i';
             }
             break;
-        case 'O':
+        case 'o':
             // No base58 sub
             break;
         case 'L':
@@ -185,7 +187,7 @@ void all_substitutes(char (*words)[34], char word[34], int *n_words, int len, in
     }
 }
 
-void alphanum_combinations(char (*word)[34], char search_list[1000][34], int *n_words, int a) {
+void alphanum_combinations(char (*word)[34], char search_list[100000][34], int *n_words, int a) {
     int initial_n_words = *n_words;
     *n_words = 0;
     //Generated alphanumeric substitutions
@@ -206,6 +208,8 @@ int main(int argc, char **argv) {
 
     int searchlen;
     int c;
+
+    long number_of_processors = sysconf(_SC_NPROCESSORS_ONLN);
 
     /* Get input arguments (length) */
     while ((c = getopt(argc, argv, "aCn:f:")) != -1) {
@@ -233,9 +237,8 @@ int main(int argc, char **argv) {
         n = "6";
     }
     searchlen = atoi(n);
-
-    ctx = secp256k1_context_create(
-        SECP256K1_CONTEXT_SIGN | SECP256K1_CONTEXT_VERIFY);
+        
+    ctx = secp256k1_context_create(SECP256K1_CONTEXT_SIGN | SECP256K1_CONTEXT_VERIFY);
 
         int i = 1;
 
@@ -246,7 +249,7 @@ int main(int argc, char **argv) {
         char words[100][34];
 
         //Generated alphanumeric substitutions
-        char search_list[1000][34];
+        char search_list[100000][34];
         int n_words = 0;
         /* Load Dictionary File */
         if (filename != "") {
@@ -276,7 +279,11 @@ int main(int argc, char **argv) {
             printf("%d words have been loaded.\n", n_words);
         }
 
+	
+    	printf("Running on %d processors.\n", number_of_processors);
         puts("Beginning search...\n");
+        for (unsigned i = 1; i != number_of_processors; ++i) if ( 0 == fork() ) break;  
+
         time(&start_time);
         while (1) {
             if (!gen_keypair(seckey, pubaddress, ctx)) {
@@ -285,11 +292,11 @@ int main(int argc, char **argv) {
             }
 
             if (check_vanity(pubaddress, searchlen, search_list, n_words)) {
-                printf("Seckey : ");
+                printf("Private key (raw): ");
                 for (int j=0; j<32; j++) {
                     printf("%02X", seckey[j]);
                 }
-                printf("\nWIF: ");
+                printf("Private key (WIF): ");
                 create_wif(seckey);
 
                 printf("Public Address: %s\n\n", pubaddress);
@@ -300,7 +307,7 @@ int main(int argc, char **argv) {
                 time_spent = difftime(current_time, start_time);
 
                 rate = (double)(i / time_spent);
-                printf("Generated %d addresses in %.1fs. Rate:%.1f/s \n", i, time_spent, rate);
+                //printf("Generated %d addresses in %.1fs. Rate:%.1f/s \n", i, time_spent, rate);
             }
 
             i++;
