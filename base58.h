@@ -3,10 +3,10 @@
 typedef unsigned char byte;
 
 /* See https://en.wikipedia.org/wiki/Positional_notation#Base_conversion */
-char* base58(byte *s, int s_size, char *out, int out_size) {
+char *base58(byte *s, int s_size, char *out, int out_size) {
     static const char *base_chars = "123456789"
-    "ABCDEFGHJKLMNPQRSTUVWXYZ"
-    "abcdefghijkmnopqrstuvwxyz";
+                                    "ABCDEFGHJKLMNPQRSTUVWXYZ"
+                                    "abcdefghijkmnopqrstuvwxyz";
 
     byte s_cp[s_size];
     memcpy(s_cp, s, s_size);
